@@ -9,24 +9,24 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/clockText"
-    android:textSize="20dp"/>
+    android:textSize="24dp"/>
 
 	<TextView
 	android:id="@+id/clock"
 	android:layout_width="wrap_content" 
 	android:layout_height="wrap_content"
-	android:textSize="20dp"/>
+	android:textSize="24dp"/>
 
 	<TextView
     android:id="@+id/reminderText"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/reminderText"
-    android:textSize="20dp"/>
+    android:textSize="24dp"/>
 
     <TextView
 	android:id="@+id/reminder"
 	android:layout_width="match_parent" 
 	android:layout_height="wrap_content"
-	android:textSize="20dp"/>
+	android:textSize="24dp"/>
 </LinearLayout>
