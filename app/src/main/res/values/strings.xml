@@ -4,5 +4,7 @@
     <string name="add_New_Reminder">Add New Reminder</string>
     <string name="reminderTime">Reminder Time</string>
     <string name="reminderContent">Reminder</string>
-    <string name="btnSave">btnSave</string>
+    <string name="btnSave">Save</string>
+    <string name="clockText">Clock: </string>
+    <string name="reminderText">;Content: </string>
 </resources>
