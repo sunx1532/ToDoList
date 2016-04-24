@@ -1,12 +1,16 @@
 package com.jikexueyuan.todolist;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,44 +32,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //刷新列表
         refreshList();
 
-        //设置长按监听
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+        //响应长按删除
+        longClick();
 
-                //建立一个对话框
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Real delete the data?");
+        //处理闹钟提醒
+        // 指定启动ChangeService组件
+        Intent intent = new Intent(MainActivity.this, MyService.class);
+        startService(intent);
 
-                String strYes = "Yes";
-                String strNo = "No";
-
-                final String[] options = {strYes, strNo};
-
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
-                            case 0:
-                                Cursor cursor = (Cursor) listView.getAdapter().getItem(position);
-                                String id = String.valueOf(cursor.getInt(cursor.getColumnIndex("_id")));
-                                db.delete("event","_id = ?",new String[]{id});
-                                Toast.makeText(MainActivity.this,"Delete Successful.",Toast.LENGTH_SHORT).show();
-                                refreshList();
-                                break;
-                            case 1:
-                                Toast.makeText(MainActivity.this,"Delete Canceled.",Toast.LENGTH_SHORT).show();
-                                break;
-                        }
-                    }
-                });
-                builder.show();
-
-                return false;
-            }
-        });
     }
 
     // 创建一个菜单
@@ -136,6 +113,46 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    private void longClick() {
+        //设置长按监听
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                //建立一个对话框
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Real delete the data?");
+
+                String strYes = "Yes";
+                String strNo = "No";
+
+                final String[] options = {strYes, strNo};
+
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case 0:
+                                Cursor cursor = (Cursor) listView.getAdapter().getItem(position);
+                                String id = String.valueOf(cursor.getInt(cursor.getColumnIndex("_id")));
+                                db.delete("event","_id = ?",new String[]{id});
+                                Toast.makeText(MainActivity.this,"Delete Successful.",Toast.LENGTH_SHORT).show();
+                                refreshList();
+                                break;
+                            case 1:
+                                Toast.makeText(MainActivity.this,"Delete Canceled.",Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                });
+                builder.show();
+
+                return false;
+            }
+        });
+    }
+
 
     @Override
     protected void onDestroy() {
