@@ -42,7 +42,7 @@ public class MyService extends Service {
 
         nm.notify(notifyId, mBuilder.build());
 
-//        nm.cancel(notifyId);
+        nm.cancel(notifyId);
 
         /*Notification notification = mBuilder.build();
         notification.flags = Notification.FLAG_AUTO_CANCEL;

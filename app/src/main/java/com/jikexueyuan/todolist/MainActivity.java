@@ -21,6 +21,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     SQLiteDatabase db;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
         // 指定启动ChangeService组件
         Intent intent = new Intent(MainActivity.this, MyService.class);
         startService(intent);
+
+
 
     }
 
@@ -84,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         }catch(SQLiteException se){
             db.execSQL("create table event (_id integer" + " primary key autoincrement, " + "clock varchar(50)," + " reminder varchar(255))");
         }
+
+        getHours();
     }
 
     //创建ListView
@@ -151,6 +157,43 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private String getHours () {
+
+        String hour = "";
+
+        String query = "SELECT * FROM event";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        ArrayList listHour = null;
+
+        int i = 0;
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                hour = cursor.getString(cursor.getColumnIndex("clock"));
+
+                listHour = new ArrayList();
+
+                listHour.add(hour);
+
+//                System.out.println("hourStr1:" + hour);
+
+                i++;
+            }
+            while (cursor.moveToNext());
+        }
+
+        if (listHour != null) {
+            for (int j = 0; j <= i; j++) {
+                System.out.println(listHour.get(j));
+            }
+        }
+
+        return hour;
     }
 
 
