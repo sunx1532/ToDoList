@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db;
     ListView listView;
     String dbPath;
+    ArrayList listHour = null;
+    ArrayList listReminder = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         getHours();
+//        getReminder();
     }
 
     //创建ListView
@@ -159,41 +162,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String getHours () {
+    private void getHours () {
 
         String hour = "";
+        String reminder = "";
 
         String query = "SELECT * FROM event";
 
         Cursor cursor = db.rawQuery(query, null);
 
-        ArrayList listHour = null;
-
-        int i = 0;
+        listHour = new ArrayList();
+        listReminder = new ArrayList();
 
         if (cursor.moveToFirst()) {
 
             do {
                 hour = cursor.getString(cursor.getColumnIndex("clock"));
-
-                listHour = new ArrayList();
-
                 listHour.add(hour);
 
-//                System.out.println("hourStr1:" + hour);
-
-                i++;
+                reminder = cursor.getString(cursor.getColumnIndex("reminder"));
+                listReminder.add(reminder);
             }
             while (cursor.moveToNext());
         }
-
-        if (listHour != null) {
-            for (int j = 0; j <= i; j++) {
-                System.out.println(listHour.get(j));
-            }
-        }
-
-        return hour;
     }
 
 
