@@ -1,16 +1,12 @@
 package com.jikexueyuan.todolist;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.addEvent:
                 Intent reminderIntent = new Intent(this,AddReminder.class);
-                //reminderIntent.putExtras("Path",1);
+                reminderIntent.putExtra("dbPath",dbPath);
                 startActivityForResult(reminderIntent,0);
 
                 break;
@@ -91,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
             db.execSQL("create table event (_id integer" + " primary key autoincrement, " + "clock varchar(50)," + " reminder varchar(255))");
         }
 
-        getHours();
-//        getReminder();
+        getData();
+
     }
 
     //创建ListView
@@ -162,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getHours () {
+    private void getData () {
 
         String hour = "";
         String reminder = "";

@@ -1,6 +1,7 @@
 package com.jikexueyuan.todolist;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -32,7 +33,11 @@ public class AddReminder extends Activity {
                 int clock_int = Integer.parseInt(clock);
 
                 if (clock_int >= 0 && clock_int <= 24){
-                    db = SQLiteDatabase.openOrCreateDatabase("/data/user/0/com.jikexueyuan.todolist/files/reminder.db3",null);
+                    Intent i = getIntent();
+
+                    String dbPath = i.getStringExtra("dbPath");
+
+                    db = SQLiteDatabase.openOrCreateDatabase(dbPath + "/reminder.db3",null);
 
                     insertData(db,clock,reminder);
 
