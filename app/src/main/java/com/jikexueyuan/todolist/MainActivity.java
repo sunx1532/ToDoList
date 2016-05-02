@@ -1,6 +1,10 @@
 package com.jikexueyuan.todolist;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,7 +21,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
     String dbPath;
     ArrayList listHour = null;
     ArrayList listReminder = null;
+
+    public ArrayList listHourNew = null;
+
+    AlarmManager alarmMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
         //响应长按删除
         longClick();
 
-        //处理闹钟提醒
-        // 指定启动ChangeService组件
-        Intent intent = new Intent(MainActivity.this, MyService.class);
-        startService(intent);
+//        //处理闹钟提醒
+//        // 指定启动ChangeService组件
+//        Intent intent = new Intent(MainActivity.this, MyService.class);
+//        startService(intent);
 
+        //设置闹钟
+        setAlarm();
 
 
     }
@@ -87,7 +99,9 @@ public class MainActivity extends AppCompatActivity {
             db.execSQL("create table event (_id integer" + " primary key autoincrement, " + "clock varchar(50)," + " reminder varchar(255))");
         }
 
+        //生成时间和事件列表
         getData();
+
 
     }
 
@@ -119,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //长按删除
     private void longClick() {
         //设置长按监听
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -158,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //获取时间和事件,生成列表
     private void getData () {
 
         String hour = "";
@@ -181,7 +197,76 @@ public class MainActivity extends AppCompatActivity {
             }
             while (cursor.moveToNext());
         }
+
+        System.out.println(listReminder);
+        System.out.println(listHour);
     }
+
+    //事件和事件列表排序
+    private void setAlarm(){
+
+        listHourNew = new ArrayList();
+
+//        alarmMgr = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
+
+//        Intent intent = new Intent(MainActivity.this,MyService.class);
+        // 创建PendingIntent对象
+//        final PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+
+        //获取当前的日期和小时数用于对比
+        Calendar cal = Calendar.getInstance();
+        int hourNow = cal.get(cal.HOUR_OF_DAY);
+        int dateNow = cal.get(cal.DAY_OF_MONTH);
+
+        //排序
+
+        for (int i = 0; i < listHour.size(); i++){
+            if (Integer.valueOf(listHour.get(i).toString()) > hourNow){
+                //设置闹钟在当天播放的时间
+                final Calendar mCalendar = Calendar.getInstance();
+
+                mCalendar.set(mCalendar.HOUR_OF_DAY,Integer.valueOf(listHour.get(i).toString()));
+                mCalendar.set(mCalendar.MINUTE,0);
+                mCalendar.set(mCalendar.SECOND,0);
+                //转换格式
+                long alarmClock = mCalendar.getTimeInMillis();
+
+                System.out.println("long:" + alarmClock);
+
+                listHourNew.add(alarmClock);
+
+//                alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmClock, pi);
+            }
+            else{
+                //设置闹钟在次日播放的时间
+                final Calendar mCalendar = Calendar.getInstance();
+
+                mCalendar.set(mCalendar.DAY_OF_MONTH,dateNow+1);
+                mCalendar.set(mCalendar.HOUR_OF_DAY,Integer.valueOf(listHour.get(i).toString()));
+                mCalendar.set(mCalendar.MINUTE,0);
+                mCalendar.set(mCalendar.SECOND,0);
+                //转换格式
+                long alarmClock = mCalendar.getTimeInMillis();
+
+                System.out.println("long:" + alarmClock);
+
+                listHourNew.add(alarmClock);
+
+//                alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmClock, pi);
+            }
+        }
+
+        Intent serviceIntent = new Intent(this,MyService.class);
+
+        serviceIntent.putIntegerArrayListExtra("list",listHourNew);
+
+        System.out.println("MainActivity:"+listHourNew);
+
+        this.startService(serviceIntent);
+
+    }
+
 
 
     @Override
