@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //        startService(intent);
 
         //设置闹钟
-        setAlarm();
+//        setAlarm();
 
 
     }

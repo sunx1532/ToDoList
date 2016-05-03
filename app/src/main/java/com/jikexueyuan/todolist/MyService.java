@@ -72,6 +72,7 @@ public class MyService extends Service {
 //            }
 //        }.start();
 
+/*
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 //
 ////        Intent intentR = new Intent(this,Receiver.class);
@@ -83,6 +84,7 @@ public class MyService extends Service {
         PendingIntent pi = PendingIntent.getBroadcast(this,0,intent,0);
 //
         alarmManager.set(alarmManager.RTC_WAKEUP, 1462287600000L, pi);
+*/
 
 //        for (int i = 0; i < list.size();i++){
 //            alarmManager.set(alarmManager.RTC_WAKEUP, (long) list.get(i), pi);
@@ -129,7 +131,18 @@ public class MyService extends Service {
 //        aManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+2000, pi);
 //
 //
+  /*      NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+
+        mBuilder.setContentTitle("Event Alarm"); //设置通知栏标题
+        mBuilder.setWhen(System.currentTimeMillis()); //通知产生的时间，会在通知信息里显示，一般是系统获取到的时间
+        mBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        mBuilder.setDefaults(android.app.Notification.DEFAULT_VIBRATE);
+
+        int notifyId = 1;
+
+        nm.notify(notifyId, mBuilder.build());*/
 
 
         return super.onStartCommand(intent, flags, startId);
