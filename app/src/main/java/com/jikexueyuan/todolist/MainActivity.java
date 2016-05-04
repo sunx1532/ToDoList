@@ -1,6 +1,9 @@
 package com.jikexueyuan.todolist;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,7 +19,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
-import java.util.ArrayList;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db;
     ListView listView;
     String dbPath;
-    ArrayList listHour = null;
-    ArrayList listReminder = null;
 
 
     @Override
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = SQLiteDatabase.openOrCreateDatabase(dbPath + "/reminder.db3",null);
 
-        System.out.println(dbPath + "/reminder.db3");
+//        System.out.println(dbPath + "/reminder.db3");
 
         listView = (ListView) findViewById(R.id.listView);
 
@@ -81,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
             db.execSQL("create table event (_id integer" + " primary key autoincrement, " + "clock varchar(50)," + " reminder varchar(255))");
         }
 
-        //生成时间和事件列表
-        getData();
-
+        //启动Service
+        Intent serviceIntent = new Intent(MainActivity.this, MyService.class);
+        startService(serviceIntent);
 
     }
 
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode){
             case 0:
                 switch (resultCode){
-                    case 0:
+                    case RESULT_OK:
                         refreshList();
                         break;
                 }
@@ -139,6 +140,14 @@ public class MainActivity extends AppCompatActivity {
                                 Cursor cursor = (Cursor) listView.getAdapter().getItem(position);
                                 String id = String.valueOf(cursor.getInt(cursor.getColumnIndex("_id")));
                                 db.delete("event","_id = ?",new String[]{id});
+
+                                //取消闹钟
+                                Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                                PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this,Integer.valueOf(id),intent,0);
+
+                                AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
+                                am.cancel(pi);
+
                                 Toast.makeText(MainActivity.this,"Delete Successful.",Toast.LENGTH_SHORT).show();
                                 refreshList();
                                 break;
@@ -154,36 +163,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    //获取时间和事件,生成列表
-    private void getData () {
-
-        String hour = "";
-        String reminder = "";
-
-        String query = "SELECT * FROM event";
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        listHour = new ArrayList();
-        listReminder = new ArrayList();
-
-        if (cursor.moveToFirst()) {
-
-            do {
-                hour = cursor.getString(cursor.getColumnIndex("clock"));
-                listHour.add(hour);
-
-                reminder = cursor.getString(cursor.getColumnIndex("reminder"));
-                listReminder.add(reminder);
-            }
-            while (cursor.moveToNext());
-        }
-
-        System.out.println(listReminder);
-        System.out.println(listHour);
-    }
-
 
     @Override
     protected void onDestroy() {
