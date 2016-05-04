@@ -18,7 +18,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddReminder" />
-        <activity android:name=".Notification" />
+        <activity android:name=".Notification"
+            android:theme="@android:style/Theme.NoDisplay"/>
 
         <service
             android:name=".MyService"
@@ -33,6 +34,9 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".AlarmReceiver"
+            android:process=":remote"/>
     </application>
 
 </manifest>

@@ -75,7 +75,7 @@ public class AddReminder extends Activity {
         int dateNow = cal.get(cal.DAY_OF_MONTH);
 
         alarmMgr = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
-        Intent intent = new Intent(this,Receiver.class);
+        Intent intent = new Intent(this,AlarmReceiver.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
 
         if (clock_int > hourNow){
@@ -84,14 +84,15 @@ public class AddReminder extends Activity {
             mCalendar.set(mCalendar.HOUR_OF_DAY,clock_int);
             mCalendar.set(mCalendar.MINUTE,0);
             mCalendar.set(mCalendar.SECOND,0);
+            mCalendar.set(mCalendar.MILLISECOND,0);
             //转换格式
             long alarmClock = mCalendar.getTimeInMillis();
 
-            System.out.println("long:" + alarmClock);
+//            System.out.println("long:" + alarmClock);
 
-            alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmClock, pi);
+            alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmClock, AlarmManager.INTERVAL_DAY, pi);
 
-            System.out.println("添加闹钟成功");
+//            System.out.println("添加闹钟成功");
 
         }else{
             //设置闹钟在次日播放的时间
@@ -101,14 +102,15 @@ public class AddReminder extends Activity {
             mCalendar.set(mCalendar.HOUR_OF_DAY,clock_int);
             mCalendar.set(mCalendar.MINUTE,0);
             mCalendar.set(mCalendar.SECOND,0);
+            mCalendar.set(mCalendar.MILLISECOND,0);
             //转换格式
             long alarmClock = mCalendar.getTimeInMillis();
 
-            System.out.println("long:" + alarmClock);
+//            System.out.println("long:" + alarmClock);
 
-            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, alarmClock, 24*60*60*1000, pi);
+            alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP, alarmClock, AlarmManager.INTERVAL_DAY, pi);
 
-            System.out.println("添加闹钟成功");
+//            System.out.println("添加闹钟成功");
         }
 
     }
