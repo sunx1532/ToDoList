@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                                 db.delete("event","_id = ?",new String[]{id});
 
                                 //取消闹钟
-                                Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                                Intent intent = new Intent(MainActivity.this, Receiver.class);
                                 PendingIntent pi = PendingIntent.getBroadcast(MainActivity.this,Integer.valueOf(id),intent,0);
 
                                 AlarmManager am = (AlarmManager)getSystemService(Service.ALARM_SERVICE);

@@ -99,7 +99,7 @@ public class MyService extends Service {
         int dateNow = cal.get(cal.DAY_OF_MONTH);
 
         alarmMgr = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
-        Intent intent = new Intent(this,AlarmReceiver.class);
+        Intent intent = new Intent(this,Receiver.class);
 
         for (int i = 0; i < listId.size(); i++){
             if ( Integer.valueOf(listHour.get(i).toString()) > hourNow){
